@@ -1,0 +1,8 @@
+1: Error: Failed to list Firebase projects. See firebase-debug.log for more info
+   solution : run "firebase login --reauth" on your terminal and start the process again
+2: Error: Automatic card filling is disabled 
+    solution : this happen because you are not in secure connection so just put the numbers manually
+               meaning 4242 4242 4242 4242 04/24 242 42424
+
+
+
