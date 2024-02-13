@@ -2,8 +2,10 @@ const {onRequest} = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
 
 const express = require('express')
+// setGlobalOptions({maxInstances:10})
 const cors = require('cors')
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
+const { setGlobalOptions } = require("firebase-functions/v2");
 dotenv.config()
 const stripe = require("stripe")(process.env.STRIPE_KEY)
 const app = express();
@@ -36,9 +38,4 @@ app.get("/", (req, res) => {
     }
   });
   
-
-
-
-
-
   exports.api = onRequest(app);

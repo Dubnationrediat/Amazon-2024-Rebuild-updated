@@ -7,13 +7,12 @@ import {useStripe,useElements,CardElement} from '@stripe/react-stripe-js'
 import CurrencyFormat from "../../Components/CurrencyFormat/CurrencyFormat";
 import { axiosInstance } from "../../Api/axios";
 import { ClipLoader } from "react-spinners";
-import { db } from "../../Utility/firbase";
+import {db} from '../../Utility/firbase'
 import { useNavigate } from "react-router-dom";
 import { Type } from "../../Utility/action.type";
 
 function Payment() {
   const [{ user, basket }, dispatch] = useContext(DataContext);
-  // console.log(user);
 
   const totalItem = basket?.reduce((amount, item) => {
     return item.amount + amount;
@@ -53,32 +52,26 @@ function Payment() {
       //   },
       // });
 
-      let confirmation = await stripe.confirmCardPayment(clientSecret,{
-          payment_method:{
-            card : elements.getElement(CardElement)
-          }
-      })
-
+    let confirmation = await stripe.confirmCardPayment(clientSecret,{
+      payment_method : {
+        card : elements.getElement(CardElement)
+      }
+    })
       let paymentIntent = confirmation.error.payment_intent
-
       // 3. after the confirmation --> order firestore database save, clear basket
-      await db
-        .collection("users")
-        .doc(user.uid)
-        .collection("orders")
-        .doc(paymentIntent.id)
-        .set({
-          basket: basket,
-          amount: paymentIntent.amount,
-          created: paymentIntent.created,
-        });
+      await db.collection("users").doc(user?.uid).collection("orders").doc(paymentIntent.id).set({
+        basket,
+        amount : paymentIntent.amount,
+        created :paymentIntent.created
+      }).catch((err)=>{
+        console.log(err.message)
+      })
       // empty the basket
       dispatch({ type: Type.EMPTY_BASKET });
-
       setProcessing(false);
       navigate("/orders", { state: { msg: "you have placed new Order" } });
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       setProcessing(false);
     }
   };
